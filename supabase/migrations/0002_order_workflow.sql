@@ -67,6 +67,9 @@ begin
     if v_quantity is null or v_quantity <= 0 or v_quantity > 1000000 then
       raise exception 'Item quantity must be greater than zero';
     end if;
+    if v_pricing = 'per_piece' and v_quantity <> trunc(v_quantity) then
+      raise exception 'Per-piece item quantities must be whole numbers';
+    end if;
     if v_unit_price is null or v_unit_price < 0 or v_unit_price > 1000000 then
       raise exception 'Item price must be between zero and 1,000,000';
     end if;
