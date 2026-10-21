@@ -2,7 +2,8 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Eye, EyeOff, LoaderCircle, Shirt } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, LoaderCircle } from "lucide-react";
+import { BrandLogo } from "@/components/brand";
 import { createClient } from "@/lib/supabase/client";
 
 type Mode = "login" | "signup";
@@ -78,7 +79,7 @@ export default function AuthPage() {
     <main className="auth-shell">
       <section className="auth-visual">
         <div className="auth-grid" />
-        <a className="auth-brand" href="/auth"><span className="auth-brand-mark"><Shirt size={22} /></span><span>laundri<b>fy</b></span></a>
+        <a className="auth-brand" href="/auth"><BrandLogo variant="mark" className="auth-brand-mark-image"/><span className="auth-brand-light">Laundrify</span></a>
         <div className="auth-visual-copy">
           <span className="auth-kicker">A BETTER WAY TO RUN YOUR LAUNDRY</span>
           <h1>Less paperwork.<br /><span>More flow.</span></h1>
@@ -88,7 +89,7 @@ export default function AuthPage() {
       </section>
       <section className="auth-form-side">
         <div className="auth-form-wrap">
-          <div className="auth-mobile-brand"><span className="auth-brand-mark"><Shirt size={20} /></span><span>laundri<b>fy</b></span></div>
+          <div className="auth-mobile-brand"><BrandLogo className="auth-mobile-logo" priority/></div>
           <div className="auth-heading">
             <span className="auth-kicker">{mode === "login" ? "WELCOME BACK" : "GET STARTED"}</span>
             <h2>{mode === "login" ? "Sign in to Laundrify" : "Create your account"}</h2>
