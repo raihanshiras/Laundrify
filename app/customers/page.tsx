@@ -3,6 +3,8 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, LoaderCircle, Plus, Search, Users, X, Phone, MapPin, MessageCircle } from "lucide-react";
+import { BrandLogo } from "@/components/brand";
+import { LoadingScreen } from "@/components/loading-screen";
 import { createClient } from "@/lib/supabase/client";
 
 type Customer = {
@@ -125,11 +127,13 @@ export default function CustomersPage() {
     window.open(`https://wa.me/${number}?text=${encodeURIComponent(`Hello ${customer.full_name}, this is your laundry shop. How can we help you today?`)}`, "_blank", "noopener,noreferrer");
   }
 
+  if (loading) return <LoadingScreen variant="customers"/>;
+
   return (
     <main className="customers-shell">
       <header className="customers-topbar">
         <button className="customers-back" type="button" onClick={() => router.push("/")}><ArrowLeft size={17} /> Dashboard</button>
-        <div className="customers-brand"><span className="customers-brand-mark"><Users size={19} /></span><span>laundri<b>fy</b></span></div>
+        <BrandLogo className="compact-header-logo" priority/>
         <span className="customers-top-label">CUSTOMER MANAGEMENT</span>
       </header>
       <section className="customers-content">
