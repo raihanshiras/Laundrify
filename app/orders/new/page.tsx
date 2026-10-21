@@ -4,6 +4,8 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, CalendarClock, Check, ChevronDown, LoaderCircle, Minus, Plus, Shirt, UserRound, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { BrandLogo } from "@/components/brand";
+import { LoadingScreen } from "@/components/loading-screen";
 
 type Customer={id:string;full_name:string;phone:string};
 function errorMessage(error:unknown,fallback:string){if(error&&typeof error==="object"&&"message" in error&&typeof error.message==="string")return error.message;return error instanceof Error?error.message:fallback;}
@@ -103,10 +105,10 @@ export default function NewOrderPage(){
   finally{setSaving(false);}
  }
 
- if(loading)return <main className="onboarding-loading"><LoaderCircle className="spin" size={24}/><span>Preparing a new order…</span></main>;
+ if(loading)return <LoadingScreen variant="new-order"/>;
 
  return <main className="orders-shell">
-  <header className="orders-topbar"><button type="button" className="orders-back" onClick={()=>router.push("/orders")}><ArrowLeft size={16}/> All orders</button><div className="orders-brand"><span className="orders-brand-mark"><Shirt size={19}/></span><span>laundri<b>fy</b></span></div><span className="orders-top-label">NEW ORDER</span></header>
+  <header className="orders-topbar"><button type="button" className="orders-back" onClick={()=>router.push("/orders")}><ArrowLeft size={16}/> All orders</button><BrandLogo className="compact-header-logo" priority/><span className="orders-top-label">NEW ORDER</span></header>
   <form className="new-order-content" onSubmit={submit}>
    <div className="new-order-heading"><div><div className="orders-eyebrow">INTAKE · STEP 01</div><h1>Create an order<span>.</span></h1><p>Record the garments, agree the price, and set a collection date.</p></div><div className="new-order-ref"><span>ORDER REFERENCE</span><strong>Generated on save</strong><small>A unique number is assigned for this shop.</small></div></div>
    {error&&<div className="order-alert error" role="alert">{error}</div>}
