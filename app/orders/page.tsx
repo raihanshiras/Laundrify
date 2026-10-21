@@ -16,7 +16,6 @@ const statusLabel: Record<Status,string> = {received:"Received",processing:"Proc
 
 export default function OrdersPage() {
   const router = useRouter();
-  const [shopId,setShopId] = useState("");
   const [orders,setOrders] = useState<Order[]>([]);
   const [customers,setCustomers] = useState<Record<string,Customer>>({});
   const [items,setItems] = useState<Record<string,Item[]>>({});
@@ -62,7 +61,6 @@ export default function OrdersPage() {
         if(memberError) throw memberError;
         if(!member?.shop_id){router.replace("/onboarding");return;}
         if(!active)return;
-        setShopId(member.shop_id);
         await load(member.shop_id);
       }catch(e){if(active)setError(e instanceof Error?e.message:"Could not load orders.");}
       finally{if(active)setLoading(false);}
