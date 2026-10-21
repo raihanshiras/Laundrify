@@ -4,6 +4,8 @@ import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, CalendarClock, Check, Clock3, LoaderCircle, MessageCircle, PackageCheck, ReceiptText, RotateCcw, Shirt, UserRound, Wallet } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { BrandLogo } from "@/components/brand";
+import { LoadingScreen } from "@/components/loading-screen";
 
 type Status="received"|"processing"|"ready"|"delivered"|"cancelled";
 type Order={id:string;shop_id:string;customer_id:string;shop_order_number:string;status:Status;received_at:string;due_at:string|null;ready_at:string|null;delivered_at:string|null;notes:string|null;subtotal:number;discount_amount:number;total_amount:number};
@@ -106,8 +108,8 @@ export default function OrderDetailPage(){
   finally{setBusy(false);}
  }
 
- if(loading)return <main className="onboarding-loading"><LoaderCircle className="spin" size={24}/><span>Opening order details…</span></main>;
- if(!order)return <main className="orders-shell"><header className="orders-topbar"><button className="orders-back" onClick={()=>router.push("/orders")}><ArrowLeft size={16}/> All orders</button><div className="orders-brand"><span className="orders-brand-mark"><Shirt size={19}/></span><span>laundri<b>fy</b></span></div><span className="orders-top-label">ORDER DETAILS</span></header><section className="orders-content"><div className="order-alert error">{error||"Order not found."}</div><button className="orders-primary" onClick={()=>router.push("/orders")}><ArrowLeft size={15}/> Back to orders</button></section></main>;
+ if(loading)return <LoadingScreen variant="order-detail"/>;
+ if(!order)return <main className="orders-shell"><header className="orders-topbar"><button className="orders-back" onClick={()=>router.push("/orders")}><ArrowLeft size={16}/> All orders</button><BrandLogo className="compact-header-logo" priority/><span className="orders-top-label">ORDER DETAILS</span></header><section className="orders-content"><div className="order-alert error">{error||"Order not found."}</div><button className="orders-primary" onClick={()=>router.push("/orders")}><ArrowLeft size={15}/> Back to orders</button></section></main>;
 
  return <main className="orders-shell">
   <header className="orders-topbar"><button type="button" className="orders-back" onClick={()=>router.push("/orders")}><ArrowLeft size={16}/> All orders</button><div className="orders-brand"><span className="orders-brand-mark"><Shirt size={19}/></span><span>laundri<b>fy</b></span></div><span className="orders-top-label">ORDER DETAILS</span></header>
