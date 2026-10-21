@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowDownLeft, ArrowLeft, ArrowUpRight, CalendarClock, ChevronRight, CirclePlus, LoaderCircle, Search, Shirt, SlidersHorizontal } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { BrandLogo } from "@/components/brand";
+import { LoadingScreen } from "@/components/loading-screen";
 
 type Status = "received" | "processing" | "ready" | "delivered" | "cancelled";
 type Order = { id: string; shop_id: string; customer_id: string; shop_order_number: string; status: Status; received_at: string; due_at: string | null; subtotal: number; discount_amount: number; total_amount: number; notes: string | null };
@@ -85,10 +87,12 @@ export default function OrdersPage() {
     revenue:orders.filter(o=>o.status!=="cancelled").reduce((sum,o)=>sum+Number(o.total_amount||0),0)
   }),[orders]);
 
+  if(loading) return <LoadingScreen variant="orders"/>;
+
   return <main className="orders-shell">
     <header className="orders-topbar">
       <button type="button" className="orders-back" onClick={()=>router.push("/")}><ArrowLeft size={16}/> Dashboard</button>
-      <div className="orders-brand"><span className="orders-brand-mark"><Shirt size={19}/></span><span>laundri<b>fy</b></span></div>
+      <BrandLogo className="compact-header-logo" priority/>
       <span className="orders-top-label">ORDER MANAGEMENT</span>
     </header>
     <section className="orders-content">
