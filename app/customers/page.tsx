@@ -139,7 +139,7 @@ export default function CustomersPage() {
       <section className="customers-content">
         <div className="customers-heading-row">
           <div><div className="customers-eyebrow">YOUR CUSTOMER DIRECTORY</div><h1>Customers<span>.</span></h1><p>Keep customer details organized and easy to find.</p></div>
-          <button className="customers-primary" type="button" onClick={() => { setShowForm(v => !v); setError(""); setSuccess(""); }}><Plus size={17} /> Add customer</button>
+          {customers.length > 0 && <button className="customers-primary" type="button" onClick={() => { setShowForm(v => !v); setError(""); setSuccess(""); }}><Plus size={17} /> Add customer</button>}
         </div>
 
         {showForm && <form className="customer-form-card" onSubmit={handleAddCustomer}>
@@ -162,7 +162,7 @@ export default function CustomersPage() {
           <div className="customers-list-heading"><div><h2>Customer directory</h2><p>Search by customer name or phone number.</p></div><span className="customers-count">{filtered.length} {filtered.length === 1 ? "customer" : "customers"}</span></div>
           <div className="customers-search"><Search size={17} /><input aria-label="Search customers" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search name or phone number..." />{search && <button type="button" aria-label="Clear search" onClick={() => setSearch("")}><X size={15} /></button>}</div>
           {loading ? <div className="customers-empty"><LoaderCircle className="spin" size={22} /><span>Loading customer records…</span></div> :
-            filtered.length === 0 ? <div className="customers-empty"><div className="customers-empty-icon"><Users size={23} /></div><strong>{search ? "No matching customers" : "Your customer list starts here"}</strong><span>{search ? "Try a different name or phone number." : "Add your first customer to start building your directory."}</span>{!search && <button className="customers-primary" type="button" onClick={() => setShowForm(true)}><Plus size={16} /> Add your first customer</button>}</div> :
+            filtered.length === 0 ? <div className="customers-empty"><div className="customers-empty-icon"><Users size={23} /></div><strong>{search ? "No matching customers" : "Your customer list starts here"}</strong><span>{search ? "Try a different name or phone number." : "Add your first customer to start building your directory."}</span>{!search && !showForm && <button className="customers-primary" type="button" onClick={() => setShowForm(true)}><Plus size={16} /> Add your first customer</button>}</div> :
             <div className="customer-records">{filtered.map(customer => <article className="customer-record" key={customer.id}><div className="customer-record-avatar">{customer.full_name.trim().split(/\s+/).slice(0,2).map(part => part[0]?.toUpperCase()).join("")}</div><div className="customer-record-main"><strong>{customer.full_name}</strong><span><Phone size={13} />{customer.phone}</span>{customer.address && <span><MapPin size={13} />{customer.address}</span>}{customer.notes && <small>{customer.notes}</small>}</div><button className="customer-whatsapp" type="button" onClick={() => openWhatsApp(customer)}><MessageCircle size={15} /> WhatsApp</button></article>)}</div>
           }
         </section>
