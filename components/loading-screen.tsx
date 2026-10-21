@@ -23,14 +23,6 @@ export function LoadingScreen({ variant }: { variant: LoadingVariant }) {
       <div className="loading-aura loading-aura-two" />
       <div className="loading-grid-texture" />
       <div className="loading-stage">
-        <div className="loading-emblem">
-          <span className="loading-orbit loading-orbit-one" />
-          <span className="loading-orbit loading-orbit-two" />
-          <span className="loading-orbit-dot" />
-          <BrandLogo variant="mark" className="loading-logo-mark" priority />
-          <span className="loading-tile loading-tile-one" />
-          <span className="loading-tile loading-tile-two" />
-        </div>
         <BrandLogo className="loading-wordmark" priority />
         <div className="loading-copy">
           <span className="loading-eyebrow">{copy.eyebrow}</span>
