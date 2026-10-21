@@ -78,7 +78,7 @@ export default function OrderDetailPage(){
  const paid=useMemo(()=>payments.reduce((sum,p)=>sum+(p.kind==="refund"?-Number(p.amount):Number(p.amount)),0),[payments]);
  const outstanding=Math.max(0,Number(order?.total_amount||0)-paid);
  const nextStatuses:Status[]=order?.status==="received"?["processing","cancelled"]:order?.status==="processing"?["ready","cancelled"]:order?.status==="ready"?["delivered"]:[];
- const whatsappUrl=customer?"https://wa.me/"+customer.phone.replace(/[^0-9]/g,"")+"?text="+encodeURIComponent("Hello "+customer.full_name+", your laundry order "+(order?.shop_order_number||"")+" is "+(order?statusLabel[order.status].toLowerCase():"updated")+". "+(order?.status==="ready"?"It is ready for collection. ":"")+"Thank you!"):"";
+ const whatsappUrl=customer&&order?"https://wa.me/"+customer.phone.replace(/[^0-9]/g,"")+"?text="+encodeURIComponent("Hello "+customer.full_name+", your laundry order "+order.shop_order_number+" is "+statusLabel[order.status].toLowerCase()+".\\n\\nOrder total: "+money(Number(order.total_amount))+(Number(order.discount_amount)>0?"\\nDiscount: "+money(Number(order.discount_amount)):"")+"\\nAdvance paid: "+money(Math.max(0,paid))+"\\nBalance due: "+money(outstanding)+"\\nExpected collection: "+(order.due_at?dateTime(order.due_at):"Not scheduled")+"\\n\\n"+(order.status==="ready"?"Your order is ready for collection. ":"")+"Thank you!"):"";
 
  async function changeStatus(next:Status){
   if(!order||!shopId)return;
