@@ -57,6 +57,8 @@ export default function OrdersPage() {
     async function init(){
       try{
         const supabase=createClient();
+        const requestedStatus = new URLSearchParams(window.location.search).get("status");
+        if (requestedStatus && filters.some(option => option.value === requestedStatus)) setFilter(requestedStatus);
         const {data:{session}}=await supabase.auth.getSession();
         if(!session){router.replace("/auth");return;}
         const {data:member,error:memberError}=await supabase.from("shop_members").select("shop_id").limit(1).maybeSingle();
