@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { ArrowRight, LoaderCircle, LogOut, MapPin, Phone, Store } from "lucide-react";
 import { BrandLogo } from "@/components/brand";
 import { LoadingScreen } from "@/components/loading-screen";
@@ -76,7 +77,7 @@ export default function OnboardingPage() {
 
   return (
     <main className="onboarding-shell">
-      <header className="onboarding-top"><a className="onboarding-brand" href="/" aria-label="Laundrify home"><BrandLogo className="onboarding-logo" priority/></a><button className="onboarding-signout" onClick={signOut} type="button"><LogOut size={16} /> Sign out</button></header>
+      <header className="onboarding-top"><Link className="onboarding-brand" href="/" aria-label="Laundrify home"><BrandLogo className="onboarding-logo" priority/></Link><button className="onboarding-signout" onClick={signOut} type="button"><LogOut size={16} /> Sign out</button></header>
       <section className="onboarding-content">
         <div className="onboarding-step">STEP 01 <span /> YOUR WORKSPACE</div>
         <h1>Let&apos;s set up your shop.</h1>
