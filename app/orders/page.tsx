@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowDownLeft, ArrowLeft, ArrowUpRight, CalendarClock, ChevronRight, CirclePlus, LoaderCircle, Search, Shirt, SlidersHorizontal } from "lucide-react";
+import { ArrowDownLeft, ArrowLeft, ArrowUpRight, CalendarClock, ChevronRight, CirclePlus, LoaderCircle, Search, Shirt } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { BrandLogo } from "@/components/brand";
 import { LoadingScreen } from "@/components/loading-screen";
@@ -106,7 +106,7 @@ export default function OrdersPage() {
       </div>
       <section className="orders-table-card">
         <div className="orders-list-head"><div><h2>All orders</h2><p>Search orders by reference, customer or garment.</p></div><span className="orders-total-pill">{filtered.length} shown</span></div>
-        <div className="orders-toolbar"><div className="orders-search"><Search size={17}/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search order, customer or item…" aria-label="Search orders"/>{search&&<button type="button" aria-label="Clear search" onClick={()=>setSearch("")}>×</button>}</div><div className="orders-toolbar-label"><SlidersHorizontal size={14}/> Filter status</div></div>
+        <div className="orders-toolbar"><div className="orders-search"><Search size={17}/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search order, customer or item…" aria-label="Search orders"/>{search&&<button type="button" aria-label="Clear search" onClick={()=>setSearch("")}>×</button>}</div></div>
         <div className="orders-filters" role="group" aria-label="Filter orders">{filters.map(f=><button type="button" key={f.value} className={filter===f.value?"selected":""} onClick={()=>setFilter(f.value)}>{f.label}{f.value!=="all"&&<span>{orders.filter(o=>o.status===f.value).length}</span>}</button>)}</div>
         {loading?<div className="orders-empty"><LoaderCircle className="spin" size={22}/><span>Loading orders…</span></div>:
          filtered.length===0?<div className="orders-empty"><div className="orders-empty-icon"><Shirt size={22}/></div><strong>{search||filter!=="all"?"No orders match those filters":"No orders yet"}</strong><span>{search||filter!=="all"?"Try changing the search or status filter.":"Create your first order to start tracking garments."}</span>{orders.length===0&&<button className="orders-primary" type="button" onClick={()=>router.push("/orders/new")}><CirclePlus size={16}/> Create first order</button>}</div>:
