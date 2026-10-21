@@ -115,7 +115,7 @@ export default function Home() {
   return (
     <main className="app-shell">
       <aside className="sidebar">
-        <div className="brand"><BrandLogo className="sidebar-brand-logo" priority /><div className="brand-caption">LAUNDRY MANAGEMENT</div></div>
+        <div className="brand"><BrandLogo className="sidebar-brand-logo" priority /></div>
         <div className="shop-switcher"><div className="shop-avatar">{shop?.name?.[0]?.toUpperCase() || "L"}</div><div className="shop-copy"><strong>{shop?.name || "Your shop"}</strong><span>{shop?.address || "Shop workspace"}</span></div></div>
         <div className="nav-label">WORKSPACE</div>
         <nav className="nav-list" aria-label="Main navigation">
