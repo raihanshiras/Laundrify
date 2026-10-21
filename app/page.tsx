@@ -1,5 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { LoaderCircle } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 import {
   ArrowDownRight, ArrowUpRight, Bell, ChevronDown, CircleHelp,
   Clock3, CreditCard, LayoutDashboard, MessageCircle, MoreHorizontal,
@@ -34,6 +38,47 @@ function MetricCard({ label, value, detail, positive, icon: Icon }: {
 }
 
 export default function Home() {
+  const router = useRouter();
+  const [checkingAccess, setCheckingAccess] = useState(true);
+
+  useEffect(() => {
+    const supabase = createClient();
+    let alive = true;
+
+    async function checkAccess() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        router.replace("/auth");
+        return;
+      }
+
+      const { data: memberships, error } = await supabase
+        .from("shop_members")
+        .select("shop_id")
+        .limit(1);
+
+      if (error) {
+        console.error("Could not verify shop membership:", error.message);
+        if (alive) setCheckingAccess(false);
+        return;
+      }
+
+      if (!memberships?.length) {
+        router.replace("/onboarding");
+        return;
+      }
+
+      if (alive) setCheckingAccess(false);
+    }
+
+    checkAccess();
+    return () => { alive = false; };
+  }, [router]);
+
+  if (checkingAccess) {
+    return <main className="onboarding-loading"><LoaderCircle className="spin" size={24} /><span>Opening your Laundrify workspace…</span></main>;
+  }
+
   return (
     <main className="app-shell">
       <aside className="sidebar">
