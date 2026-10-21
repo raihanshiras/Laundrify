@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, LogOut, MapPin, Phone, Store } from "lucide-react";
+import { ArrowRight, LoaderCircle, LogOut, MapPin, Phone, Store } from "lucide-react";
 import { BrandLogo } from "@/components/brand";
 import { LoadingScreen } from "@/components/loading-screen";
 import { createClient } from "@/lib/supabase/client";
