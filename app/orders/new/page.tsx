@@ -2,10 +2,12 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, CalendarClock, Check, ChevronDown, LoaderCircle, Minus, Plus, Shirt, UserRound } from "lucide-react";
+import { ArrowLeft, CalendarClock, Check, ChevronDown, LoaderCircle, Minus, Plus, Shirt, UserRound, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 type Customer={id:string;full_name:string;phone:string};
+function errorMessage(error:unknown,fallback:string){if(error&&typeof error==="object"&&"message" in error&&typeof error.message==="string")return error.message;return error instanceof Error?error.message:fallback;}
+function normalizePhone(value:string){return value.replace(/[\\s().-]/g,"");}
 type Pricing="per_piece"|"per_kg"|"fixed";
 type Line={id:string;itemName:string;pricing:Pricing;quantity:string;unitPrice:string;garmentTag:string;notes:string};
 const money=(value:number)=>new Intl.NumberFormat("en-IN",{style:"currency",currency:"INR",maximumFractionDigits:2}).format(Number.isFinite(value)?value:0);
@@ -26,6 +28,11 @@ export default function NewOrderPage(){
  const [saving,setSaving]=useState(false);
  const [error,setError]=useState("");
  const [lineSequence,setLineSequence]=useState(2);
+ const [showCustomerForm,setShowCustomerForm]=useState(false);
+ const [customerName,setCustomerName]=useState("");
+ const [customerPhone,setCustomerPhone]=useState("");
+ const [customerAddress,setCustomerAddress]=useState("");
+ const [savingCustomer,setSavingCustomer]=useState(false);
 
  useEffect(()=>{
   let active=true;
@@ -92,7 +99,7 @@ export default function NewOrderPage(){
    const result=Array.isArray(data)?data[0]:data;
    if(!result?.created_order_id)throw new Error("The database did not return an order reference. Refresh the order list before retrying.");
    router.replace("/orders/"+result.created_order_id);
-  }catch(e){setError(e instanceof Error?e.message:"Could not create this order. Please try again.");}
+  }catch(e){setError(errorMessage(e,"Could not create this order. Please try again."));}
   finally{setSaving(false);}
  }
 
@@ -109,7 +116,8 @@ export default function NewOrderPage(){
      <section className="order-form-card">
       <div className="order-section-heading"><span className="order-section-icon"><UserRound size={18}/></span><div><h2>Customer & collection</h2><p>Who does this order belong to?</p></div><span className="order-step-number">01</span></div>
       <div className="order-form-grid">
-       <label className="order-field order-field-wide">Customer <b>*</b><span className="order-select-wrap"><select value={customerId} onChange={e=>setCustomerId(e.target.value)} required><option value="">Choose a customer…</option>{customers.map(c=><option key={c.id} value={c.id}>{c.full_name} · {c.phone}</option>)}</select><ChevronDown size={16}/></span><small>Not listed? Add them in <button type="button" className="inline-action" onClick={()=>router.push("/customers")}>Customers</button>.</small></label>
+       <label className="order-field order-field-wide">Customer <b>*</b><span className="order-select-wrap"><select value={customerId} onChange={e=>setCustomerId(e.target.value)} required><option value="">Choose a customer…</option>{customers.map(c=><option key={c.id} value={c.id}>{c.full_name} · {c.phone}</option>)}</select><ChevronDown size={16}/></span><small>Not listed? <button type="button" className="inline-action" onClick={()=>{setShowCustomerForm(v=>!v);setError("");}}>+ Add customer here</button>.</small></label>
+       {showCustomerForm&&<div className="inline-customer-form order-field-wide"><div className="inline-customer-heading"><div><strong>Quick add customer</strong><small>Add their name and phone without leaving this order.</small></div><button type="button" aria-label="Close quick add" onClick={()=>setShowCustomerForm(false)}><X size={17}/></button></div><div className="order-form-grid"><label className="order-field">Full name <b>*</b><input value={customerName} onChange={e=>setCustomerName(e.target.value)} maxLength={160} required placeholder="Customer name"/></label><label className="order-field">Phone number <b>*</b><input type="tel" value={customerPhone} onChange={e=>setCustomerPhone(e.target.value)} maxLength={24} required placeholder="+91 98765 43210"/></label><label className="order-field order-field-wide">Address <span className="field-optional">OPTIONAL</span><input value={customerAddress} onChange={e=>setCustomerAddress(e.target.value)} maxLength={300} placeholder="Area, city"/></label></div><button type="button" className="orders-primary inline-customer-save" disabled={savingCustomer} onClick={async()=>{setError("");const name=customerName.trim();const phone=customerPhone.trim();const normalized=normalizePhone(phone);if(!name||normalized.length<7||normalized.length>16){setError("Enter a customer name and a valid phone number.");return;}setSavingCustomer(true);try{const supabase=createClient();const {data:{user}}=await supabase.auth.getUser();if(!user)throw new Error("Your session expired. Please sign in again.");const {data,error:insertError}=await supabase.from("customers").insert({shop_id:shopId,full_name:name,phone,phone_normalized:normalized,address:customerAddress.trim()||null,created_by:user.id}).select("id,full_name,phone").single();if(insertError){if(insertError.code==="23505")throw new Error("A customer with this phone number already exists in your shop.");throw insertError;}const added=data as Customer;setCustomers(current=>[...current,added].sort((a,b)=>a.full_name.localeCompare(b.full_name)));setCustomerId(added.id);setCustomerName("");setCustomerPhone("");setCustomerAddress("");setShowCustomerForm(false);}catch(e){setError(errorMessage(e,"Could not add this customer."));}finally{setSavingCustomer(false);}}}>{savingCustomer?<LoaderCircle className="spin" size={15}/>:<Plus size={15}/>} Save & select customer</button></div>
        <label className="order-field order-field-wide">Expected collection date <span className="field-optional">OPTIONAL</span><input type="datetime-local" value={dueAt} onChange={e=>setDueAt(e.target.value)}/><small>Leave blank if the collection date is not confirmed.</small></label>
       </div>
      </section>
