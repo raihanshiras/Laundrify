@@ -2,7 +2,7 @@
 
 import { useCallback,useEffect,useMemo,useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft,ArrowUpRight,LoaderCircle,ReceiptText,Search,Shirt,Wallet } from "lucide-react";
+import { ArrowLeft,ArrowUpRight,ReceiptText,Search,Wallet } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { BrandLogo } from "@/components/brand";
 import { LoadingScreen } from "@/components/loading-screen";
