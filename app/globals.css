@@ -142,3 +142,69 @@ h1{font-family:Manrope,sans-serif;font-size:27px;letter-spacing:-1.1px;font-weig
 @keyframes loader-arrive{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:680px){.compact-header-logo{width:126px}.sidebar-brand-logo{width:148px}.loading-emblem{width:112px;height:112px}.loading-logo-mark{width:63px;height:63px}.loading-wordmark{width:164px;margin-bottom:22px}.loading-copy p{font-size:11px}.loading-footer{bottom:19px;font-size:7px;letter-spacing:1.2px}.dashboard-search-field input{font-size:11px}.dashboard-status-filter select{min-width:74px;font-size:10px}}
 @media(prefers-reduced-motion:reduce){.loading-aura-one,.loading-aura-two,.loading-logo-mark,.loading-orbit,.loading-orbit-dot,.loading-tile,.loading-progress span,.loading-status-dots i,.loading-status>i:first-child,.loading-stage{animation:none!important}}
+
+
+/* Laundrify signature loader — soft glass, water ribbons and electric blue light */
+.premium-loading{
+  --loader-a:#087bff;--loader-b:#08d9e8;
+  background:
+    radial-gradient(ellipse at 50% 48%,rgba(63,184,255,.17) 0%,rgba(142,220,255,.09) 22%,transparent 49%),
+    radial-gradient(ellipse at 15% 15%,rgba(64,169,255,.12),transparent 38%),
+    linear-gradient(135deg,#f7fcff 0%,#fff 48%,#f3faff 100%);
+  color:#0b2b63;
+}
+.loading-grid-texture{display:none}
+.loading-aura{filter:blur(24px);opacity:.75}
+.loading-aura-one{width:min(70vw,850px);top:49%;background:radial-gradient(ellipse,rgba(0,192,255,.22) 0%,rgba(0,111,255,.11) 33%,transparent 70%);animation:loader-breathe 7s ease-in-out infinite}
+.loading-aura-two{width:min(46vw,560px);left:47%;top:49%;background:radial-gradient(ellipse,rgba(0,221,237,.18),rgba(0,123,255,.08) 42%,transparent 72%);animation:loader-breathe 9s ease-in-out -2s infinite reverse}
+.premium-loading:before,.premium-loading:after{content:"";position:absolute;z-index:-1;pointer-events:none;width:58vw;height:34vw;min-width:540px;min-height:300px;border-radius:48% 52% 58% 42%;filter:blur(1px);opacity:.83}
+.premium-loading:before{left:-16vw;top:-13vw;transform:rotate(-24deg);background:linear-gradient(155deg,rgba(255,255,255,.96) 10%,rgba(112,202,255,.32) 28%,rgba(0,161,255,.56) 37%,rgba(255,255,255,.95) 42%,rgba(166,220,255,.5) 52%,rgba(255,255,255,.4) 60%,transparent 72%);box-shadow:inset -8px -7px 18px rgba(255,255,255,.75),0 15px 60px rgba(18,155,255,.12);animation:loader-ribbon-left 16s ease-in-out infinite alternate}
+.premium-loading:after{right:-20vw;bottom:-17vw;transform:rotate(-24deg);background:linear-gradient(155deg,rgba(255,255,255,.95) 8%,rgba(130,209,255,.32) 22%,rgba(0,154,255,.64) 34%,rgba(255,255,255,.96) 40%,rgba(160,216,255,.58) 52%,rgba(255,255,255,.75) 62%,transparent 74%);box-shadow:inset 7px 8px 18px rgba(255,255,255,.78),0 0 70px rgba(0,174,255,.12);animation:loader-ribbon-right 18s ease-in-out infinite alternate}
+.loading-stage{width:min(100%,520px);z-index:1}
+.loading-emblem{width:156px;height:156px;margin-bottom:1px}
+.loading-logo-mark{width:100px;height:100px;filter:drop-shadow(0 10px 25px rgba(0,120,255,.22));animation:loader-float 5s ease-in-out infinite}
+.loading-orbit{inset:10px;border-color:rgba(0,133,255,.12)}
+.loading-orbit-two{inset:27px;border-color:rgba(0,209,231,.16)}
+.loading-orbit-dot{right:27px;top:26px}
+.loading-tile{opacity:.65;box-shadow:0 0 18px rgba(0,180,255,.22)}
+.loading-wordmark{width:244px;max-width:76vw;margin:-4px auto 30px;filter:drop-shadow(0 3px 8px rgba(9,83,160,.04))}
+.loading-copy{max-width:460px}
+.loading-eyebrow{font-size:10px;letter-spacing:5px;color:#8aa6c4;font-weight:800}
+.loading-copy h1{margin-top:30px;font-size:clamp(25px,3.3vw,34px);letter-spacing:-1.2px;color:#0b2b63}
+.loading-copy h1 span{color:#0787ff}
+.loading-copy p{max-width:400px;margin-top:7px;font-size:15px;line-height:1.6;color:#7892b1}
+.loading-progress{width:min(100%,465px);height:29px;margin:34px auto 24px;padding:6px;background:rgba(222,237,247,.68);border:1px solid rgba(211,232,245,.85);box-shadow:inset 0 2px 6px rgba(31,96,139,.04),0 8px 28px rgba(37,150,220,.08)}
+.loading-progress span{width:76%;border-radius:999px;background:linear-gradient(90deg,#087bff 0%,#00aaff 54%,#04dbe8 100%);box-shadow:0 0 18px rgba(0,176,255,.32);animation:loader-progress-glide 2.8s ease-in-out infinite}
+.loading-status{width:min(100%,465px);justify-content:center;gap:10px;font-size:11px;color:#7892b1;font-weight:600;letter-spacing:0}
+.loading-status>i:first-child{width:17px;height:17px;flex:0 0 17px;background:linear-gradient(135deg,#087bff,#00cde9);box-shadow:none;position:relative}
+.loading-status>i:first-child:after{content:"✓";position:absolute;inset:0;color:white;font-size:11px;line-height:17px;text-align:center;font-style:normal}
+.loading-status-dots{margin-left:auto}
+.loading-footer{color:#9bb1c7;font-size:8px;letter-spacing:2.3px}
+.premium-loading--dashboard{--loader-a:#006bff;--loader-b:#05cce8}
+.premium-loading--orders{--loader-a:#087bff;--loader-b:#58b6f3}
+.premium-loading--new-order{--loader-a:#007bff;--loader-b:#00cdd5}
+.premium-loading--order-detail{--loader-a:#087fe9;--loader-b:#4cdbc2}
+.premium-loading--customers{--loader-a:#0987ee;--loader-b:#03cedb}
+.premium-loading--payments{--loader-a:#0875e8;--loader-b:#5bc9e8}
+.premium-loading--auth{--loader-a:#007bff;--loader-b:#00d2e6}
+.premium-loading--onboarding{--loader-a:#075aff;--loader-b:#20cadb}
+@keyframes loader-progress-glide{0%{transform:scaleX(.86);transform-origin:left;filter:saturate(.9)}50%{transform:scaleX(1);transform-origin:left;filter:saturate(1.2)}100%{transform:scaleX(.86);transform-origin:left;filter:saturate(.9)}}
+@keyframes loader-ribbon-left{0%{translate:-2% -1%;rotate:-2deg}100%{translate:3% 2%;rotate:2deg}}
+@keyframes loader-ribbon-right{0%{translate:2% 1%;rotate:1deg}100%{translate:-3% -2%;rotate:-2deg}}
+@media(max-width:680px){
+ .premium-loading:before,.premium-loading:after{width:105vw;height:66vw;min-width:0;min-height:0;opacity:.72}
+ .premium-loading:before{left:-45vw;top:-17vw}
+ .premium-loading:after{right:-49vw;bottom:-15vw}
+ .loading-emblem{width:126px;height:126px}
+ .loading-logo-mark{width:80px;height:80px}
+ .loading-wordmark{width:205px;margin-bottom:26px}
+ .loading-copy h1{margin-top:23px}
+ .loading-copy p{font-size:13px}
+ .loading-progress{height:24px;margin:27px auto 21px}
+ .loading-status{font-size:9px;gap:7px;flex-wrap:wrap}
+ .loading-footer{font-size:6px;letter-spacing:1px}
+}
+@media(prefers-reduced-motion:reduce){
+ .premium-loading:before,.premium-loading:after{animation:none}
+ .loading-progress span{animation:none;width:76%}
+}
