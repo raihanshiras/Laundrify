@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 128" fill="none">
+ <defs>
+  <linearGradient id="blue" x1="8" y1="119" x2="114" y2="9" gradientUnits="userSpaceOnUse"><stop stop-color="#1329FF"/><stop offset=".48" stop-color="#087BFF"/><stop offset="1" stop-color="#00D7EA"/></linearGradient>
+  <linearGradient id="cyan" x1="76" y1="4" x2="111" y2="38" gradientUnits="userSpaceOnUse"><stop stop-color="#08B9F5"/><stop offset="1" stop-color="#11E1E6"/></linearGradient>
+  <linearGradient id="wordBlue" x1="378" y1="25" x2="517" y2="113" gradientUnits="userSpaceOnUse"><stop stop-color="#087BFF"/><stop offset="1" stop-color="#0C8AF9"/></linearGradient>
+ </defs>
+ <g transform="translate(2 7)">
+  <rect x="37" y="2" width="31" height="31" rx="9" fill="url(#blue)"/>
+  <rect x="76" y="2" width="36" height="36" rx="11" fill="url(#cyan)"/>
+  <rect x="0" y="40" width="32" height="32" rx="9" fill="url(#blue)"/>
+  <rect x="38" y="40" width="31" height="31" rx="9" fill="url(#blue)"/>
+  <rect x="77" y="77" width="33" height="33" rx="10" fill="url(#cyan)"/>
+  <path d="M0 82C0 75.925 4.925 71 11 71H23C29.075 71 34 75.925 34 82V86H78C84.075 86 89 90.925 89 97V99C89 105.075 84.075 110 78 110H11C4.925 110 0 105.075 0 99V82Z" fill="url(#blue)"/>
+ </g>
+ <text x="138" y="91" font-family="Manrope, Arial, sans-serif" font-size="84" font-weight="800" letter-spacing="-4"><tspan fill="#08275E">Laundr</tspan><tspan fill="url(#wordBlue)">ify</tspan></text>
+</svg>
