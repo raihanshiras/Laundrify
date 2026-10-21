@@ -4,12 +4,14 @@ import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Eye, EyeOff, LoaderCircle } from "lucide-react";
 import { BrandLogo } from "@/components/brand";
+import { LoadingScreen } from "@/components/loading-screen";
 import { createClient } from "@/lib/supabase/client";
 
 type Mode = "login" | "signup";
 
 export default function AuthPage() {
   const router = useRouter();
+  const [checkingSession, setCheckingSession] = useState(true);
   const [mode, setMode] = useState<Mode>("login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -23,12 +25,18 @@ export default function AuthPage() {
     const supabase = createClient();
     let alive = true;
     supabase.auth.getSession().then(async ({ data }) => {
-      if (!alive || !data.session) return;
+      if (!alive) return;
+      if (!data.session) {
+        setCheckingSession(false);
+        return;
+      }
       const { data: shops } = await supabase
         .from("shop_members")
         .select("shop_id")
         .limit(1);
       if (alive) router.replace(shops?.length ? "/" : "/onboarding");
+    }).catch(() => {
+      if (alive) setCheckingSession(false);
     });
     return () => { alive = false; };
   }, [router]);
@@ -74,6 +82,8 @@ export default function AuthPage() {
       setBusy(false);
     }
   }
+
+  if (checkingSession) return <LoadingScreen variant="auth" />;
 
   return (
     <main className="auth-shell">

@@ -10,10 +10,10 @@ export function BrandLogo({ variant = "full", className = "", priority = false }
   const isMark = variant === "mark";
   return (
     <Image
-      src={isMark ? "/laundrify-mark.svg" : "/laundrify-logo.svg"}
+      src={isMark ? "/laundrify-mark.webp" : "/laundrify-logo.webp"}
       alt="Laundrify"
-      width={isMark ? 112 : 540}
-      height={isMark ? 112 : 128}
+      width={isMark ? 240 : 540}
+      height={isMark ? 137 : 99}
       priority={priority}
       className={className}
       draggable={false}
