@@ -112,9 +112,8 @@ export default function OrderDetailPage(){
  if(!order)return <main className="orders-shell"><header className="orders-topbar"><button className="orders-back" onClick={()=>router.push("/orders")}><ArrowLeft size={16}/> All orders</button><BrandLogo className="compact-header-logo" priority/><span className="orders-top-label">ORDER DETAILS</span></header><section className="orders-content"><div className="order-alert error">{error||"Order not found."}</div><button className="orders-primary" onClick={()=>router.push("/orders")}><ArrowLeft size={15}/> Back to orders</button></section></main>;
 
  return <main className="orders-shell">
-  <header className="orders-topbar"><button type="button" className="orders-back" onClick={()=>router.push("/orders")}><ArrowLeft size={16}/> All orders</button><div className="orders-brand"><span className="orders-brand-mark"><Shirt size={19}/></span><span>laundri<b>fy</b></span></div><span className="orders-top-label">ORDER DETAILS</span></header>
+  <header className="orders-topbar"><button type="button" className="orders-back" onClick={()=>router.push("/orders")}><ArrowLeft size={16}/> All orders</button><BrandLogo className="compact-header-logo" priority/><span className="orders-top-label">ORDER DETAILS</span></header>
   <section className="order-detail-content">
-   <button className="order-detail-back" type="button" onClick={()=>router.push("/orders")}><ArrowLeft size={15}/> All orders</button>
    <div className="order-detail-heading"><div><div className="orders-eyebrow">ORDER REFERENCE</div><h1>{order.shop_order_number}<span>.</span></h1><p>Created {dateTime(order.received_at)}</p></div><span className={"order-status order-status-large status-"+order.status}>{statusLabel[order.status]}</span></div>
    {error&&<div className="order-alert error" role="alert">{error}</div>}{success&&<div className="order-alert success" role="status">{success}</div>}
    <div className="order-detail-layout">
