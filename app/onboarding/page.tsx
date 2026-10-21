@@ -2,7 +2,9 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, LoaderCircle, LogOut, MapPin, Phone, Store } from "lucide-react";
+import { ArrowRight, LogOut, MapPin, Phone, Store } from "lucide-react";
+import { BrandLogo } from "@/components/brand";
+import { LoadingScreen } from "@/components/loading-screen";
 import { createClient } from "@/lib/supabase/client";
 
 export default function OnboardingPage() {
@@ -70,11 +72,11 @@ export default function OnboardingPage() {
     router.replace("/auth");
   }
 
-  if (checking) return <main className="onboarding-loading"><LoaderCircle className="spin" size={24} /><span>Preparing your workspace…</span></main>;
+  if (checking) return <LoadingScreen variant="onboarding"/>;
 
   return (
     <main className="onboarding-shell">
-      <header className="onboarding-top"><a className="auth-brand" href="/"><span className="auth-brand-mark"><Store size={21} /></span><span>laundri<b>fy</b></span></a><button className="onboarding-signout" onClick={signOut} type="button"><LogOut size={16} /> Sign out</button></header>
+      <header className="onboarding-top"><a className="onboarding-brand" href="/" aria-label="Laundrify home"><BrandLogo className="onboarding-logo" priority/></a><button className="onboarding-signout" onClick={signOut} type="button"><LogOut size={16} /> Sign out</button></header>
       <section className="onboarding-content">
         <div className="onboarding-step">STEP 01 <span /> YOUR WORKSPACE</div>
         <h1>Let&apos;s set up your shop.</h1>
