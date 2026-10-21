@@ -112,7 +112,7 @@ export default function NewOrderPage(){
   <form className="new-order-content" onSubmit={submit}>
    <div className="new-order-heading"><div><div className="orders-eyebrow">INTAKE · STEP 01</div><h1>Create an order<span>.</span></h1><p>Record the garments, agree the price, and set a collection date.</p></div><div className="new-order-ref"><span>ORDER REFERENCE</span><strong>Generated on save</strong><small>A unique number is assigned for this shop.</small></div></div>
    {error&&<div className="order-alert error" role="alert">{error}</div>}
-   {customers.length===0&&!loading&&<div className="order-alert info">You need a customer before creating an order. <button type="button" onClick={()=>router.push("/customers")}>Add a customer <span>↗</span></button></div>}
+   {customers.length===0&&!loading&&<div className="order-alert info">Add a customer in the Customer section below to continue. You can do it here without leaving this form.</div>}
    <div className="new-order-layout">
     <div className="new-order-main">
      <section className="order-form-card">
