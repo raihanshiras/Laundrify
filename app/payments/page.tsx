@@ -4,6 +4,8 @@ import { useCallback,useEffect,useMemo,useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft,ArrowUpRight,LoaderCircle,ReceiptText,Search,Shirt,Wallet } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { BrandLogo } from "@/components/brand";
+import { LoadingScreen } from "@/components/loading-screen";
 
 type Payment={id:string;shop_id:string;order_id:string;kind:"payment"|"refund";method:string;amount:number;notes:string|null;recorded_at:string};
 type Order={id:string;customer_id:string;shop_order_number:string;total_amount:number;status:string};
@@ -44,9 +46,9 @@ export default function PaymentsPage(){
  const received=payments.reduce((s,p)=>s+(p.kind==="refund"?-Number(p.amount):Number(p.amount)),0);
  const today=new Date().toLocaleDateString("en-CA");
  const todayTotal=payments.filter(p=>new Date(p.recorded_at).toLocaleDateString("en-CA")===today).reduce((s,p)=>s+(p.kind==="refund"?-Number(p.amount):Number(p.amount)),0);
- if(loading)return <main className="onboarding-loading"><LoaderCircle className="spin" size={24}/><span>Loading payment ledger…</span></main>;
+ if(loading)return <LoadingScreen variant="payments"/>;
  return <main className="orders-shell">
-  <header className="orders-topbar"><button type="button" className="orders-back" onClick={()=>router.push("/")}><ArrowLeft size={16}/> Dashboard</button><div className="orders-brand"><span className="orders-brand-mark"><Shirt size={19}/></span><span>laundri<b>fy</b></span></div><span className="orders-top-label">PAYMENTS & LEDGER</span></header>
+  <header className="orders-topbar"><button type="button" className="orders-back" onClick={()=>router.push("/")}><ArrowLeft size={16}/> Dashboard</button><BrandLogo className="compact-header-logo" priority/><span className="orders-top-label">PAYMENTS & LEDGER</span></header>
   <section className="orders-content">
    <div className="orders-page-heading"><div><div className="orders-eyebrow">FINANCE WORKSPACE</div><h1>Payments & ledger<span>.</span></h1><p>Review recorded payments and refunds across your shop.</p></div><button className="orders-primary" onClick={()=>router.push("/orders")}><Wallet size={15}/> Open orders</button></div>
    {error&&<div className="order-alert error">{error}</div>}
