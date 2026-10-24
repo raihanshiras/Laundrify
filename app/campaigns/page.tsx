@@ -3,8 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  ArrowLeft, Cake, Check, ChevronRight, LoaderCircle, MessageCircle,
-  Search, Send, Tag, Users, WandSparkles,
+  ArrowLeft, Cake, Check, MessageCircle, Search, Send, Tag, Users, WandSparkles,
 } from "lucide-react";
 import { BrandLogo } from "@/components/brand";
 import { LoadingScreen } from "@/components/loading-screen";
@@ -31,21 +30,21 @@ const templates: {
     title: "We miss you",
     description: "Welcome a customer back",
     icon: MessageCircle,
-    message: "Hi {name}! 👋 It’s been a while since we last saw you at {shop}. We’d love to take care of your laundry again. Drop by whenever you need us — we’ll be happy to help!",
+    message: "Hi {name}! It’s been a while since we last saw you at {shop}. We’d love to take care of your laundry again. Drop by whenever you need us — we’ll be happy to help!",
   },
   {
     id: "festival",
     title: "Festival wishes",
     description: "Celebrate a special occasion",
     icon: Cake,
-    message: "Hi {name}! 🎉 Happy {festival} from everyone at {shop}. Wishing you and your family happiness and wonderful celebrations. When your festive outfits need a little extra care, we’re here for you!",
+    message: "Hi {name}! Happy {festival} from everyone at {shop}. Wishing you and your family happiness and wonderful celebrations. When your festive outfits need a little extra care, we’re here for you!",
   },
   {
     id: "discount",
     title: "Special offer",
     description: "Share a discount",
     icon: Tag,
-    message: "Hi {name}! ✨ A little something from {shop}: enjoy {discount}% off your next laundry order. Visit us soon — we look forward to seeing you!",
+    message: "Hi {name}! A little something from {shop}: enjoy {discount}% off your next laundry order. Visit us soon — we look forward to seeing you!",
   },
   {
     id: "custom",
@@ -122,6 +121,7 @@ export default function CampaignsPage() {
   );
   const allSelected = customers.length > 0 && selectedIds.length === customers.length;
   const currentCustomer = selectedCustomers.find(customer => !openedIds.includes(customer.id)) ?? null;
+  const preparedCount = openedIds.filter(id => selectedIds.includes(id)).length;
 
   const renderedMessage = (customer: Customer | null) => {
     const name = customer?.full_name || "there";
@@ -306,43 +306,28 @@ export default function CampaignsPage() {
                   ))
                 }
               </div>
+
+              <div className="campaign-send-area">
+                <div className="campaign-send-progress" aria-live="polite">
+                  <div className="campaign-progress-track"><span style={{ width: `${selectedCustomers.length ? (preparedCount / selectedCustomers.length) * 100 : 0}%` }} /></div>
+                  <div className="campaign-progress-copy">
+                    <strong>{selectedCustomers.length ? `${Math.min(preparedCount + (currentCustomer ? 1 : 0), selectedCustomers.length)} of ${selectedCustomers.length}` : "0 customers"}</strong>
+                    <span>{currentCustomer ? `Next: ${currentCustomer.full_name}` : selectedCustomers.length ? "Campaign queue complete" : "Select customers to begin"}</span>
+                  </div>
+                </div>
+                <button className="campaign-primary" type="button" disabled={!currentCustomer || !message.trim() || sending} onClick={openNextMessage}>
+                  <Send size={16} />
+                  {currentCustomer ? `Open WhatsApp · ${preparedCount + 1} of ${selectedCustomers.length}` : selectedCustomers.length ? "All customer chats opened" : "Select customers first"}
+                </button>
+                {selectedCustomers.length > 0 && !currentCustomer && (
+                  <button className="campaign-secondary" type="button" onClick={() => { setOpenedIds([]); setNotice(""); setError(""); }}>Start campaign again</button>
+                )}
+                <p className="campaign-send-help">{currentCustomer ? "WhatsApp opens with this customer’s message. Send it there, return here, then click again for the next customer." : selectedCustomers.length ? "You’ve opened a WhatsApp chat for everyone selected. Make sure each message has been sent in WhatsApp." : "Your send button will be ready after you select recipients."}</p>
+                <div className="campaign-consent-note">Messages are prepared one customer at a time. Laundrify cannot verify delivery or send automatically; review and send each message in WhatsApp.</div>
+              </div>
             </section>
           </div>
 
-          <aside className="campaign-column campaign-column-right">
-            <section className="campaign-card campaign-preview-card">
-              <div className="campaign-card-heading">
-                <div className="campaign-heading-copy">
-                  <span className="campaign-step campaign-step-preview"><MessageCircle size={15} /></span>
-                  <div><h2>Preview & send</h2><p>Check the message before opening WhatsApp.</p></div>
-                </div>
-              </div>
-
-              <div className="campaign-preview">
-                <div className="campaign-preview-top">
-                  <span className="campaign-preview-icon"><MessageCircle size={17} /></span>
-                  <div><strong>{shopName}</strong><span>Message preview</span></div>
-                </div>
-                <div className="campaign-preview-message">{renderedMessage(selectedCustomers[0] ?? customers[0] ?? null) || "Your message preview will appear here."}</div>
-                <p className="campaign-preview-note">Names and other placeholders are filled in for each recipient.</p>
-              </div>
-
-              <div className="campaign-send-summary">
-                <div><strong>{selectedCustomers.length}</strong><span>recipients selected</span></div>
-                <div><strong>{openedIds.filter(id => selectedIds.includes(id)).length}</strong><span>WhatsApp chats opened</span></div>
-              </div>
-              <button className="campaign-primary" type="button" disabled={!currentCustomer || !message.trim() || sending} onClick={openNextMessage}>
-                {sending ? <LoaderCircle size={16} className="spin" /> : <Send size={16} />}
-                {currentCustomer ? `Open next chat · ${currentCustomer.full_name.split(/\s+/)[0]}` : selectedCustomers.length ? "All chats opened" : "Select recipients first"}
-                {currentCustomer && <ChevronRight size={16} />}
-              </button>
-              {selectedCustomers.length > 0 && !currentCustomer && (
-                <button className="campaign-secondary" type="button" onClick={() => { setOpenedIds([]); setNotice(""); setError(""); }}>Start again</button>
-              )}
-              <p className="campaign-send-help">{currentCustomer ? "Open each chat, check the message, and press Send in WhatsApp. Then return here for the next person." : selectedCustomers.length ? "You’ve opened a chat for everyone selected. You still need to send each message in WhatsApp." : "Choose recipients in step 2 to get started."}</p>
-              <div className="campaign-consent-note">Only message customers who agreed to be contacted. WhatsApp opens one chat at a time; Laundrify does not send messages automatically.</div>
-            </section>
-          </aside>
         </div>
 
         <footer className="campaign-footer"><span>Made for independent laundry businesses.</span><span>Simple, personal customer outreach.</span></footer>
