@@ -434,3 +434,20 @@ h1{font-family:Manrope,sans-serif;font-size:27px;letter-spacing:-1.1px;font-weig
  .order-wizard-previous{padding:0 11px}
  .new-order-layout.is-summary-step .order-summary-card{padding:18px}
 }
+
+/* Order wizard refinements: centered stages, searchable customers, clearer item entry */
+.new-order-layout:not(.is-summary-step){grid-template-columns:minmax(0,860px);justify-content:center}
+.order-customer-search{display:flex;align-items:center;gap:10px;min-height:42px;padding:0 13px;border:1px solid #dceaf4;border-radius:9px;background:#fff;color:#8aa2b5;transition:border-color .18s,box-shadow .18s}
+.order-customer-search:focus-within{border-color:#79bdf0;box-shadow:0 0 0 3px #1684e90d}
+.order-customer-search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#183d5a;font:inherit;font-size:12px}
+.order-customer-search input::placeholder{color:#9aafbf}
+.order-form-card:has(.order-step-number):has(.order-line-list){border-top:3px solid #1684e9}
+.order-line-list{display:flex;flex-direction:column;gap:14px}
+.order-line-card{border:1px solid #dcebf5;border-radius:12px;background:linear-gradient(180deg,#fbfdff,#fff);padding:18px}
+.order-line-heading{display:flex;align-items:center;gap:10px;margin-bottom:17px}
+.order-line-heading>strong{font-size:13px;color:#173b59;font-weight:800}
+.order-line-index{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:#e8f5ff;color:#087ce5;font-size:10px;font-weight:800}
+.order-add-line{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:46px;margin-top:14px;padding:10px 14px;border:1px dashed #8fc7ef;border-radius:10px;background:#f3faff;color:#087ce5;font-size:12px;font-weight:800;transition:background .18s,border-color .18s}
+.order-add-line:hover{background:#e8f6ff;border-color:#3da0ec}
+.order-add-line span{margin-left:auto;color:#86a5bc;font-size:10px;font-weight:700}
+@media(max-width:720px){.new-order-layout:not(.is-summary-step){grid-template-columns:minmax(0,1fr)}.order-line-card{padding:13px}}
