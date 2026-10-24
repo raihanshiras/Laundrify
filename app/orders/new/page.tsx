@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, CalendarClock, Check, ChevronDown, ChevronRight, LoaderCircle, Minus, Plus, Shirt, UserRound, X } from "lucide-react";
+import { ArrowLeft, CalendarClock, Check, ChevronDown, ChevronRight, LoaderCircle, Minus, Plus, Search, Shirt, UserRound, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { BrandLogo } from "@/components/brand";
 import { LoadingScreen } from "@/components/loading-screen";
@@ -13,7 +13,7 @@ function normalizePhone(value:string){return value.replace(/[\\s().-]/g,"");}
 type Pricing="per_piece"|"per_kg"|"fixed";
 type Line={id:string;itemName:string;pricing:Pricing;quantity:string;unitPrice:string;garmentTag:string;notes:string};
 const money=(value:number)=>new Intl.NumberFormat("en-IN",{style:"currency",currency:"INR",maximumFractionDigits:2}).format(Number.isFinite(value)?value:0);
-const newLine=(id:string):Line=>({id,itemName:"",pricing:"per_piece",quantity:"1",unitPrice:"",garmentTag:"",notes:""});
+const newLine=(id:string):Line=>({id,itemName:"",pricing:"per_kg",quantity:"1",unitPrice:"",garmentTag:"",notes:""});
 
 export default function NewOrderPage(){
  const router=useRouter();
@@ -21,6 +21,7 @@ export default function NewOrderPage(){
  const [step,setStep]=useState(0);
  const [customers,setCustomers]=useState<Customer[]>([]);
  const [customerId,setCustomerId]=useState("");
+ const [customerSearch,setCustomerSearch]=useState("");
  const [lines,setLines]=useState<Line[]>([newLine("line-1")]);
  const [dueAt,setDueAt]=useState("");
  const [notes,setNotes]=useState("");
@@ -57,6 +58,7 @@ export default function NewOrderPage(){
   init();return()=>{active=false;};
  },[router]);
 
+ const filteredCustomers=useMemo(()=>{const query=customerSearch.trim().toLocaleLowerCase();if(!query)return customers;const digits=query.replace(/\D/g,"");return customers.filter(customer=>customer.full_name.toLocaleLowerCase().includes(query)||customer.phone.toLocaleLowerCase().includes(query)||customer.phone.replace(/\D/g,"").includes(digits));},[customers,customerSearch]);
  const subtotal=useMemo(()=>lines.reduce((sum,line)=>{
   const q=Number(line.quantity),p=Number(line.unitPrice);
   return sum+(q>0&&p>=0&&Number.isFinite(q)&&Number.isFinite(p)?Math.round(q*p*100)/100:0);
@@ -121,7 +123,7 @@ export default function NewOrderPage(){
      {step===0&&(<section className="order-form-card">
       <div className="order-section-heading"><span className="order-section-icon"><UserRound size={18}/></span><div><h2>Customer & collection</h2><p>Who does this order belong to?</p></div><span className="order-step-number">01</span></div>
       <div className="order-form-grid">
-       <label className="order-field order-field-wide">Customer <b>*</b><span className="order-select-wrap"><select value={customerId} onChange={e=>setCustomerId(e.target.value)} required><option value="">Choose a customer…</option>{customers.map(c=><option key={c.id} value={c.id}>{c.full_name} · {c.phone}</option>)}</select><ChevronDown size={16}/></span><small>Not listed? <button type="button" className="inline-action" onClick={()=>{setShowCustomerForm(v=>!v);setError("");}}>+ Add customer here</button>.</small></label>
+       <label className="order-field order-field-wide">Customer <b>*</b><span className="order-customer-search"><Search size={16}/><input type="search" value={customerSearch} onChange={e=>setCustomerSearch(e.target.value)} placeholder="Search by customer name or phone number" aria-label="Search customers by name or phone"/></span><span className="order-select-wrap"><select value={customerId} onChange={e=>setCustomerId(e.target.value)} required><option value="">Choose a customer…</option>{filteredCustomers.map(c=><option key={c.id} value={c.id}>{c.full_name} · {c.phone}</option>)}</select><ChevronDown size={16}/></span><small>{filteredCustomers.length} customers found. Not listed? <button type="button" className="inline-action" onClick={()=>{setShowCustomerForm(v=>!v);setError("");}}>+ Add customer here</button>.</small></label>
        {showCustomerForm&&<div className="inline-customer-form order-field-wide"><div className="inline-customer-heading"><div><strong>Quick add customer</strong><small>Add their name and phone without leaving this order.</small></div><button type="button" aria-label="Close quick add" onClick={()=>setShowCustomerForm(false)}><X size={17}/></button></div><div className="order-form-grid"><label className="order-field">Full name <b>*</b><input value={customerName} onChange={e=>setCustomerName(e.target.value)} maxLength={160} placeholder="Customer name"/></label><label className="order-field">Phone number <b>*</b><input type="tel" value={customerPhone} onChange={e=>setCustomerPhone(e.target.value)} maxLength={24} placeholder="+91 98765 43210"/></label><label className="order-field order-field-wide">Address <span className="field-optional">OPTIONAL</span><input value={customerAddress} onChange={e=>setCustomerAddress(e.target.value)} maxLength={300} placeholder="Area, city"/></label></div><button type="button" className="orders-primary inline-customer-save" disabled={savingCustomer} onClick={async()=>{setError("");const name=customerName.trim();const phone=customerPhone.trim();const normalized=normalizePhone(phone);if(!name||normalized.length<7||normalized.length>16){setError("Enter a customer name and a valid phone number.");return;}setSavingCustomer(true);try{const supabase=createClient();const {data:{user}}=await supabase.auth.getUser();if(!user)throw new Error("Your session expired. Please sign in again.");const {data,error:insertError}=await supabase.from("customers").insert({shop_id:shopId,full_name:name,phone,phone_normalized:normalized,address:customerAddress.trim()||null,created_by:user.id}).select("id,full_name,phone").single();if(insertError){if(insertError.code==="23505")throw new Error("A customer with this phone number already exists in your shop.");throw insertError;}const added=data as Customer;setCustomers(current=>[...current,added].sort((a,b)=>a.full_name.localeCompare(b.full_name)));setCustomerId(added.id);setCustomerName("");setCustomerPhone("");setCustomerAddress("");setShowCustomerForm(false);}catch(e){setError(errorMessage(e,"Could not add this customer."));}finally{setSavingCustomer(false);}}}>{savingCustomer?<LoaderCircle className="spin" size={15}/>:<Plus size={15}/>} Save & select customer</button></div>}
        <label className="order-field order-field-wide">Expected collection date <span className="field-optional">OPTIONAL</span><input type="datetime-local" value={dueAt} onChange={e=>setDueAt(e.target.value)}/><small>Leave blank if the collection date is not confirmed.</small></label>
       </div>
