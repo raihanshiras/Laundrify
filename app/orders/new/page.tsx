@@ -59,7 +59,7 @@ export default function NewOrderPage(){
   init();return()=>{active=false;};
  },[router]);
 
- const filteredCustomers=useMemo(()=>{const query=customerSearch.trim().toLocaleLowerCase();if(!query)return customers;const digits=query.replace(/\D/g,"");return customers.filter(customer=>customer.full_name.toLocaleLowerCase().includes(query)||customer.phone.toLocaleLowerCase().includes(query)||customer.phone.replace(/\D/g,"").includes(digits));},[customers,customerSearch]);
+ const filteredCustomers=useMemo(()=>{const query=customerSearch.trim().toLocaleLowerCase();if(!query)return customers;const digits=query.replace(/\D/g,"");return customers.filter(customer=>customer.full_name.toLocaleLowerCase().includes(query)||customer.phone.toLocaleLowerCase().includes(query)||(digits.length>0&&customer.phone.replace(/\D/g,"").includes(digits)));},[customers,customerSearch]);
  const subtotal=useMemo(()=>lines.reduce((sum,line)=>{
   const q=Number(line.quantity),p=Number(line.unitPrice);
   return sum+(q>0&&p>=0&&Number.isFinite(q)&&Number.isFinite(p)?Math.round(q*p*100)/100:0);
