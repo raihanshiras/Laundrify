@@ -396,3 +396,41 @@ h1{font-family:Manrope,sans-serif;font-size:27px;letter-spacing:-1.1px;font-weig
 @media(prefers-reduced-motion:reduce){
  .loader-orb,.loader-thread,.loader-halo,.loader-ring,.loader-mark-shell,.loader-spark,.loader-wait-indicator i,.loading-stage{animation:none!important}
 }
+
+/* New order: guided three-step intake */
+.order-wizard-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:24px 0 22px;padding:8px;background:rgba(255,255,255,.72);border:1px solid #e0edf5;border-radius:14px}
+.order-wizard-step{display:flex;align-items:center;gap:11px;min-width:0;text-align:left;padding:12px 14px;border:1px solid transparent;border-radius:10px;background:transparent;color:#8197a9;transition:background .2s,border-color .2s,box-shadow .2s}
+.order-wizard-step:disabled{cursor:default;opacity:.72}
+.order-wizard-step.is-current{background:#fff;border-color:#d9ebf8;box-shadow:0 4px 14px #247cb00c;color:#173b59}
+.order-wizard-step.is-complete{color:#168568;cursor:pointer}
+.order-wizard-index{width:32px;height:32px;flex:0 0 32px;display:grid;place-items:center;border-radius:10px;background:#edf5fa;border:1px solid #e0edf5;font-size:10px;font-weight:800;letter-spacing:.3px}
+.order-wizard-step.is-current .order-wizard-index{background:linear-gradient(145deg,#087bfa,#4bb8e8);border-color:transparent;color:#fff;box-shadow:0 5px 12px #007bff25}
+.order-wizard-step.is-complete .order-wizard-index{background:#e7f7ef;border-color:#d4f0e3;color:#168568}
+.order-wizard-step>span:last-child{display:flex;flex-direction:column;gap:4px;min-width:0}
+.order-wizard-step strong{font-size:11px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.order-wizard-step small{font-size:9px;color:#8ba0b2;white-space:nowrap}
+.order-wizard-actions{display:flex;align-items:center;gap:14px;margin-top:20px;padding-top:18px;border-top:1px solid #e0edf5}
+.order-wizard-step-caption{margin-left:auto;color:#9aafbd;font-size:9px;font-weight:800;letter-spacing:1.3px}
+.order-wizard-next{min-width:142px;justify-content:center;display:flex;align-items:center;gap:12px}
+.order-next-arrow{transform:rotate(0deg)}
+.order-wizard-previous{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:0 15px;border:1px solid #dcebf4;border-radius:9px;background:#fff;color:#547187;font-size:12px;font-weight:700}
+.order-wizard-previous:hover{background:#f5fbff;border-color:#c4e2f4;color:#087ce5}
+.new-order-main.is-hidden{display:none}
+.new-order-layout.is-summary-step{grid-template-columns:minmax(0,760px);justify-content:center}
+.new-order-layout.is-summary-step .order-summary-column{width:100%;max-width:760px}
+.new-order-layout.is-summary-step .order-summary-card{padding:26px}
+.new-order-layout.is-summary-step .order-summary-heading{margin-bottom:16px}
+.new-order-layout.is-summary-step .order-summary-count{padding:18px 0}
+.new-order-layout.is-summary-step .order-payment-section{margin-top:24px;padding-top:22px}
+.new-order-layout.is-summary-step .order-submit{margin-top:22px}
+@media(max-width:720px){
+ .order-wizard-steps{gap:4px;padding:5px;margin:18px 0}
+ .order-wizard-step{flex-direction:column;align-items:flex-start;gap:7px;padding:9px 7px}
+ .order-wizard-index{width:29px;height:29px;flex-basis:29px;border-radius:9px}
+ .order-wizard-step strong{font-size:9px;white-space:normal;line-height:1.3}
+ .order-wizard-step small{font-size:8px;white-space:normal}
+ .order-wizard-actions{gap:8px}
+ .order-wizard-next{min-width:0;padding:11px 14px}
+ .order-wizard-previous{padding:0 11px}
+ .new-order-layout.is-summary-step .order-summary-card{padding:18px}
+}
