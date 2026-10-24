@@ -451,3 +451,25 @@ h1{font-family:Manrope,sans-serif;font-size:27px;letter-spacing:-1.1px;font-weig
 .order-add-line:hover{background:#e8f6ff;border-color:#3da0ec}
 .order-add-line span{margin-left:auto;color:#86a5bc;font-size:10px;font-weight:700}
 @media(max-width:720px){.new-order-layout:not(.is-summary-step){grid-template-columns:minmax(0,1fr)}.order-line-card{padding:13px}}
+
+/* Customer picker dropdown with live name/phone filtering */
+.order-customer-picker{position:relative;width:100%;z-index:5}
+.order-customer-field{position:relative;z-index:4}
+.order-customer-trigger{width:100%;min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 13px;border:1px solid #dceaf4;border-radius:9px;background:#fff;color:#234762;text-align:left;font:inherit;font-size:12px;transition:border-color .18s,box-shadow .18s}
+.order-customer-trigger>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.order-customer-trigger>svg{flex:0 0 auto;color:#8ba4b7;transition:transform .18s}
+.order-customer-trigger.is-open,.order-customer-trigger:focus-visible{outline:none;border-color:#79bdf0;box-shadow:0 0 0 3px #1684e90d}
+.order-customer-trigger.is-open>svg{transform:rotate(180deg)}
+.order-customer-placeholder{color:#839bb0}
+.order-customer-menu{position:absolute;top:calc(100% + 7px);left:0;right:0;z-index:30;padding:8px;border:1px solid #dceaf4;border-radius:12px;background:#fff;box-shadow:0 18px 42px #163e5c20;animation:order-customer-menu-in .14s ease-out}
+.order-customer-menu .order-customer-search{min-height:40px;padding:0 10px;background:#f8fbfe}
+.order-customer-options{max-height:230px;overflow-y:auto;padding-top:6px}
+.order-customer-option{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:10px;border:0;border-radius:8px;background:transparent;text-align:left;color:#234762}
+.order-customer-option:hover,.order-customer-option:focus-visible{outline:none;background:#f1f8fe}
+.order-customer-option.is-selected{background:#edf7ff;color:#087ce5}
+.order-customer-option>span{display:flex;flex-direction:column;gap:4px;min-width:0}
+.order-customer-option strong{font-size:12px;font-weight:750;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.order-customer-option small{font-size:11px;color:#8299ad}
+.order-customer-option>svg{flex:0 0 auto}
+.order-customer-empty{padding:18px 10px;text-align:center;color:#8299ad;font-size:12px}
+@keyframes order-customer-menu-in{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:translateY(0)}}
