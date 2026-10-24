@@ -114,7 +114,7 @@ export default function NewOrderPage(){
    <div className="new-order-heading"><div><div className="orders-eyebrow">NEW ORDER · STEP {String(step+1).padStart(2,"0")} OF 03</div><h1>Create an order<span>.</span></h1><p>{step===0?"Start with the customer and expected collection date.":step===1?"Add garments, services and any special instructions.":"Review the total, apply a discount and record an advance payment."}</p></div><div className="new-order-ref"><span>ORDER REFERENCE</span><strong>Generated on save</strong><small>A unique number is assigned for this shop.</small></div></div>
    
    <nav className="order-wizard-steps" aria-label="Order creation steps">{[{title:"Customer",hint:"Who & when"},{title:"Garments & services",hint:"Items & notes"},{title:"Review & payment",hint:"Total & advance"}].map((item,index)=><button key={item.title} type="button" className={"order-wizard-step "+(step===index?"is-current":step>index?"is-complete":"")} onClick={()=>{if(index<step)setStep(index);}} disabled={index>step}><span className="order-wizard-index">{step>index?<Check size={15}/>:String(index+1).padStart(2,"0")}</span><span><strong>{item.title}</strong><small>{item.hint}</small></span></button>)}</nav>
-   {error&&<div className="order-alert error" role="alert">{error}</div>
+   {error&&<div className="order-alert error" role="alert">{error}</div>}
    {customers.length===0&&!loading&&<div className="order-alert info">Add a customer in the Customer section below to continue. You can do it here without leaving this form.</div>}
    <div className={"new-order-layout "+(step===2?"is-summary-step":"")}>
     <div className={"new-order-main "+(step===2?"is-hidden":"")}>
