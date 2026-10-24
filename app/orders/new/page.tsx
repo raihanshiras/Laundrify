@@ -118,15 +118,15 @@ export default function NewOrderPage(){
    {customers.length===0&&!loading&&<div className="order-alert info">Add a customer in the Customer section below to continue. You can do it here without leaving this form.</div>}
    <div className={"new-order-layout "+(step===2?"is-summary-step":"")}>
     <div className={"new-order-main "+(step===2?"is-hidden":"")}>
-     {step===0&&({step===1&&({step===1&&(<section className="order-form-card">
+     {step===0&&(<section className="order-form-card">
       <div className="order-section-heading"><span className="order-section-icon"><UserRound size={18}/></span><div><h2>Customer & collection</h2><p>Who does this order belong to?</p></div><span className="order-step-number">01</span></div>
       <div className="order-form-grid">
        <label className="order-field order-field-wide">Customer <b>*</b><span className="order-select-wrap"><select value={customerId} onChange={e=>setCustomerId(e.target.value)} required><option value="">Choose a customer…</option>{customers.map(c=><option key={c.id} value={c.id}>{c.full_name} · {c.phone}</option>)}</select><ChevronDown size={16}/></span><small>Not listed? <button type="button" className="inline-action" onClick={()=>{setShowCustomerForm(v=>!v);setError("");}}>+ Add customer here</button>.</small></label>
        {showCustomerForm&&<div className="inline-customer-form order-field-wide"><div className="inline-customer-heading"><div><strong>Quick add customer</strong><small>Add their name and phone without leaving this order.</small></div><button type="button" aria-label="Close quick add" onClick={()=>setShowCustomerForm(false)}><X size={17}/></button></div><div className="order-form-grid"><label className="order-field">Full name <b>*</b><input value={customerName} onChange={e=>setCustomerName(e.target.value)} maxLength={160} placeholder="Customer name"/></label><label className="order-field">Phone number <b>*</b><input type="tel" value={customerPhone} onChange={e=>setCustomerPhone(e.target.value)} maxLength={24} placeholder="+91 98765 43210"/></label><label className="order-field order-field-wide">Address <span className="field-optional">OPTIONAL</span><input value={customerAddress} onChange={e=>setCustomerAddress(e.target.value)} maxLength={300} placeholder="Area, city"/></label></div><button type="button" className="orders-primary inline-customer-save" disabled={savingCustomer} onClick={async()=>{setError("");const name=customerName.trim();const phone=customerPhone.trim();const normalized=normalizePhone(phone);if(!name||normalized.length<7||normalized.length>16){setError("Enter a customer name and a valid phone number.");return;}setSavingCustomer(true);try{const supabase=createClient();const {data:{user}}=await supabase.auth.getUser();if(!user)throw new Error("Your session expired. Please sign in again.");const {data,error:insertError}=await supabase.from("customers").insert({shop_id:shopId,full_name:name,phone,phone_normalized:normalized,address:customerAddress.trim()||null,created_by:user.id}).select("id,full_name,phone").single();if(insertError){if(insertError.code==="23505")throw new Error("A customer with this phone number already exists in your shop.");throw insertError;}const added=data as Customer;setCustomers(current=>[...current,added].sort((a,b)=>a.full_name.localeCompare(b.full_name)));setCustomerId(added.id);setCustomerName("");setCustomerPhone("");setCustomerAddress("");setShowCustomerForm(false);}catch(e){setError(errorMessage(e,"Could not add this customer."));}finally{setSavingCustomer(false);}}}>{savingCustomer?<LoaderCircle className="spin" size={15}/>:<Plus size={15}/>} Save & select customer</button></div>}
        <label className="order-field order-field-wide">Expected collection date <span className="field-optional">OPTIONAL</span><input type="datetime-local" value={dueAt} onChange={e=>setDueAt(e.target.value)}/><small>Leave blank if the collection date is not confirmed.</small></label>
       </div>
-     </section>)})})}
-     <section className="order-form-card">
+     </section>)}
+     {step===1&&(<section className="order-form-card">
       <div className="order-section-heading"><span className="order-section-icon"><Shirt size={18}/></span><div><h2>Garments & services</h2><p>Each line can use piece, weight, or fixed pricing.</p></div><span className="order-step-number">02</span></div>
       <div className="order-line-list">{lines.map((line,index)=><div className="order-line-card" key={line.id}>
        <div className="order-line-heading"><span className="order-line-index">{String(index+1).padStart(2,"0")}</span><strong>Item details</strong>{lines.length>1&&<button className="order-remove-line" type="button" onClick={()=>setLines(current=>current.filter(item=>item.id!==line.id))}><Minus size={14}/> Remove</button>}</div>
@@ -141,11 +141,11 @@ export default function NewOrderPage(){
        <div className="order-line-total"><span>{Number(line.quantity)>0&&Number(line.unitPrice)>=0?Number(line.quantity).toLocaleString("en-IN")+" × "+money(Number(line.unitPrice)):"Enter quantity and price"}</span><strong>{money(Math.max(0,Number(line.quantity)||0)*Math.max(0,Number(line.unitPrice)||0))}</strong></div>
       </div>)}</div>
       <button type="button" className="order-add-line" onClick={()=>{setLines(current=>[...current,newLine("line-"+lineSequence)]);setLineSequence(value=>value+1);}} disabled={lines.length>=30}><Plus size={16}/> Add another item <span>{lines.length}/30</span></button>
-     </section>
-     <section className="order-form-card">
+     </section>)}
+     {step===1&&(<section className="order-form-card">
       <div className="order-section-heading"><span className="order-section-icon"><CalendarClock size={18}/></span><div><h2>Order notes</h2><p>Anything the team should remember.</p></div><span className="order-step-number">03</span></div>
       <label className="order-field">Notes for this order <span className="field-optional">OPTIONAL</span><textarea rows={3} value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Special instructions, stain notes, customer requests…" maxLength={2000}/></label>
-     </section>
+     </section>)}
     </div>
     {step===2&&<aside className="order-summary-column">
      <section className="order-summary-card"><div className="order-summary-heading"><span>ORDER SUMMARY</span><span className="summary-live"><i/> Live total</span></div>
