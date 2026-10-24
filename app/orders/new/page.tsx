@@ -18,6 +18,7 @@ const newLine=(id:string):Line=>({id,itemName:"",pricing:"per_piece",quantity:"1
 export default function NewOrderPage(){
  const router=useRouter();
  const [shopId,setShopId]=useState("");
+ const [step,setStep]=useState(0);
  const [customers,setCustomers]=useState<Customer[]>([]);
  const [customerId,setCustomerId]=useState("");
  const [lines,setLines]=useState<Line[]>([newLine("line-1")]);
@@ -110,19 +111,21 @@ export default function NewOrderPage(){
  return <main className="orders-shell">
   <header className="orders-topbar"><button type="button" className="orders-back" onClick={()=>router.push("/orders")}><ArrowLeft size={16}/> All orders</button><BrandLogo className="compact-header-logo" priority/><span className="orders-top-label">NEW ORDER</span></header>
   <form className="new-order-content" onSubmit={submit}>
-   <div className="new-order-heading"><div><div className="orders-eyebrow">INTAKE · STEP 01</div><h1>Create an order<span>.</span></h1><p>Record the garments, agree the price, and set a collection date.</p></div><div className="new-order-ref"><span>ORDER REFERENCE</span><strong>Generated on save</strong><small>A unique number is assigned for this shop.</small></div></div>
-   {error&&<div className="order-alert error" role="alert">{error}</div>}
+   <div className="new-order-heading"><div><div className="orders-eyebrow">NEW ORDER · STEP {String(step+1).padStart(2,"0")} OF 03</div><h1>Create an order<span>.</span></h1><p>{step===0?"Start with the customer and expected collection date.":step===1?"Add garments, services and any special instructions.":"Review the total, apply a discount and record an advance payment."}</p></div><div className="new-order-ref"><span>ORDER REFERENCE</span><strong>Generated on save</strong><small>A unique number is assigned for this shop.</small></div></div>
+   
+   <nav className="order-wizard-steps" aria-label="Order creation steps">{[{title:"Customer",hint:"Who & when"},{title:"Garments & services",hint:"Items & notes"},{title:"Review & payment",hint:"Total & advance"}].map((item,index)=><button key={item.title} type="button" className={"order-wizard-step "+(step===index?"is-current":step>index?"is-complete":"")} onClick={()=>{if(index<step)setStep(index);}} disabled={index>step}><span className="order-wizard-index">{step>index?<Check size={15}/>:String(index+1).padStart(2,"0")}</span><span><strong>{item.title}</strong><small>{item.hint}</small></span></button>)}</nav>
+   {error&&<div className="order-alert error" role="alert">{error}</div>
    {customers.length===0&&!loading&&<div className="order-alert info">Add a customer in the Customer section below to continue. You can do it here without leaving this form.</div>}
    <div className="new-order-layout">
-    <div className="new-order-main">
-     <section className="order-form-card">
+    <div className={"new-order-main "+(step===2?"is-hidden":"")}>
+     {step===0&&({step===1&&({step===1&&(<section className="order-form-card">
       <div className="order-section-heading"><span className="order-section-icon"><UserRound size={18}/></span><div><h2>Customer & collection</h2><p>Who does this order belong to?</p></div><span className="order-step-number">01</span></div>
       <div className="order-form-grid">
        <label className="order-field order-field-wide">Customer <b>*</b><span className="order-select-wrap"><select value={customerId} onChange={e=>setCustomerId(e.target.value)} required><option value="">Choose a customer…</option>{customers.map(c=><option key={c.id} value={c.id}>{c.full_name} · {c.phone}</option>)}</select><ChevronDown size={16}/></span><small>Not listed? <button type="button" className="inline-action" onClick={()=>{setShowCustomerForm(v=>!v);setError("");}}>+ Add customer here</button>.</small></label>
        {showCustomerForm&&<div className="inline-customer-form order-field-wide"><div className="inline-customer-heading"><div><strong>Quick add customer</strong><small>Add their name and phone without leaving this order.</small></div><button type="button" aria-label="Close quick add" onClick={()=>setShowCustomerForm(false)}><X size={17}/></button></div><div className="order-form-grid"><label className="order-field">Full name <b>*</b><input value={customerName} onChange={e=>setCustomerName(e.target.value)} maxLength={160} placeholder="Customer name"/></label><label className="order-field">Phone number <b>*</b><input type="tel" value={customerPhone} onChange={e=>setCustomerPhone(e.target.value)} maxLength={24} placeholder="+91 98765 43210"/></label><label className="order-field order-field-wide">Address <span className="field-optional">OPTIONAL</span><input value={customerAddress} onChange={e=>setCustomerAddress(e.target.value)} maxLength={300} placeholder="Area, city"/></label></div><button type="button" className="orders-primary inline-customer-save" disabled={savingCustomer} onClick={async()=>{setError("");const name=customerName.trim();const phone=customerPhone.trim();const normalized=normalizePhone(phone);if(!name||normalized.length<7||normalized.length>16){setError("Enter a customer name and a valid phone number.");return;}setSavingCustomer(true);try{const supabase=createClient();const {data:{user}}=await supabase.auth.getUser();if(!user)throw new Error("Your session expired. Please sign in again.");const {data,error:insertError}=await supabase.from("customers").insert({shop_id:shopId,full_name:name,phone,phone_normalized:normalized,address:customerAddress.trim()||null,created_by:user.id}).select("id,full_name,phone").single();if(insertError){if(insertError.code==="23505")throw new Error("A customer with this phone number already exists in your shop.");throw insertError;}const added=data as Customer;setCustomers(current=>[...current,added].sort((a,b)=>a.full_name.localeCompare(b.full_name)));setCustomerId(added.id);setCustomerName("");setCustomerPhone("");setCustomerAddress("");setShowCustomerForm(false);}catch(e){setError(errorMessage(e,"Could not add this customer."));}finally{setSavingCustomer(false);}}}>{savingCustomer?<LoaderCircle className="spin" size={15}/>:<Plus size={15}/>} Save & select customer</button></div>}
        <label className="order-field order-field-wide">Expected collection date <span className="field-optional">OPTIONAL</span><input type="datetime-local" value={dueAt} onChange={e=>setDueAt(e.target.value)}/><small>Leave blank if the collection date is not confirmed.</small></label>
       </div>
-     </section>
+     </section>)})})}
      <section className="order-form-card">
       <div className="order-section-heading"><span className="order-section-icon"><Shirt size={18}/></span><div><h2>Garments & services</h2><p>Each line can use piece, weight, or fixed pricing.</p></div><span className="order-step-number">02</span></div>
       <div className="order-line-list">{lines.map((line,index)=><div className="order-line-card" key={line.id}>
@@ -144,7 +147,7 @@ export default function NewOrderPage(){
       <label className="order-field">Notes for this order <span className="field-optional">OPTIONAL</span><textarea rows={3} value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Special instructions, stain notes, customer requests…" maxLength={2000}/></label>
      </section>
     </div>
-    <aside className="order-summary-column">
+    {step===2&&<aside className="order-summary-column">
      <section className="order-summary-card"><div className="order-summary-heading"><span>ORDER SUMMARY</span><span className="summary-live"><i/> Live total</span></div>
       <div className="order-summary-count"><span className="summary-glyph"><Shirt size={19}/></span><div><strong>{lines.length} {lines.length===1?"line item":"line items"}</strong><small>{lines.reduce((s,l)=>s+(Number(l.quantity)>0?Number(l.quantity):0),0).toLocaleString("en-IN")} total units / kg</small></div></div>
       <div className="order-money-row"><span>Subtotal</span><strong>{money(subtotal)}</strong></div>
@@ -156,8 +159,9 @@ export default function NewOrderPage(){
       <p className="order-summary-note">Saving creates the order, item lines, initial status history and any payment together.</p>
      </section>
      <div className="order-trust-note"><span><Check size={15}/></span><p><strong>Made for the counter.</strong><br/>Order numbers are generated per shop, and totals are recalculated by the database.</p></div>
-    </aside>
+    </aside>}
    </div>
+   <div className="order-wizard-actions">{step>0&&<button type="button" className="order-wizard-previous" onClick={()=>{setError("");setStep(value=>value-1);}}><ArrowLeft size={16}/> Previous</button>}<span className="order-wizard-step-caption">STEP {step+1} OF 3</span>{step<2&&<button type="button" className="orders-primary order-wizard-next" onClick={()=>{setError("");if(step===0){if(!customerId){setError("Choose a customer before continuing.");return;}setStep(1);return;}for(let i=0;i<lines.length;i++){const line=lines[i];if(!line.itemName.trim()){setError(`Enter a name for item ${i+1}.`);return;}const q=Number(line.quantity),p=Number(line.unitPrice);if(!Number.isFinite(q)||q<=0||q>1000000){setError(`Enter a valid quantity for item ${i+1}.`);return;}if(line.unitPrice.trim()===""||!Number.isFinite(p)||p<0||p>1000000){setError(`Enter a valid unit price for item ${i+1}.`);return;}}setStep(2);}} >Continue <ChevronDown size={16} className="order-next-arrow"/></button>}</div>
   </form>
  </main>;
 }
