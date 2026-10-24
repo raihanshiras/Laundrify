@@ -38,7 +38,7 @@ const templates: {
     title: "Festival greetings",
     description: "Send warm wishes for a special occasion.",
     icon: Cake,
-    message: "Hi {name}! 🎉 Warm wishes from everyone at {shop}. May your celebration be full of happiness. When your festive outfits need a little extra care, we’re here for you!",
+    message: "Hi {name}! 🎉 Happy {festival} from everyone at {shop}. Wishing you and your family happiness and wonderful celebrations. When your festive outfits need a little extra care, we’re here for you!",
   },
   {
     id: "discount",
@@ -72,6 +72,7 @@ export default function CampaignsPage() {
   const [templateId, setTemplateId] = useState<TemplateId>("inactive");
   const [message, setMessage] = useState(templates[0].message);
   const [discount, setDiscount] = useState("10");
+  const [festival, setFestival] = useState("Onam");
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -127,7 +128,8 @@ export default function CampaignsPage() {
     return message
       .replaceAll("{name}", name)
       .replaceAll("{shop}", shopName)
-      .replaceAll("{discount}", discount.trim() || "10");
+      .replaceAll("{discount}", discount.trim() || "10")
+      .replaceAll("{festival}", festival.trim() || "your festival");
   };
 
   function chooseTemplate(id: TemplateId) {
@@ -246,6 +248,9 @@ export default function CampaignsPage() {
                   );
                 })}
               </div>
+              {templateId === "festival" && (
+                <label className="campaign-field"><span>Festival or occasion name</span><input type="text" value={festival} onChange={event => setFestival(event.target.value)} maxLength={80} placeholder="e.g. Onam, Eid, Christmas" /><small className="campaign-field-hint">This name will be inserted wherever {`{festival}`} appears in the message.</small></label>
+              )}
               {templateId === "discount" && (
                 <label className="campaign-field"><span>Discount percentage</span><input type="number" min="1" max="90" value={discount} onChange={event => setDiscount(event.target.value)} /><small className="campaign-field-hint">Adjust the offer before preparing messages.</small></label>
               )}
@@ -256,7 +261,7 @@ export default function CampaignsPage() {
               </label>
               <div className="campaign-editor-actions">
                 <div className="campaign-token-row">
-                  {["{name}", "{shop}", ...(templateId === "discount" ? ["{discount}"] : [])].map(token => <button key={token} type="button" className="campaign-token" onClick={() => setMessage(current => current + token)}>{token}</button>)}
+                  {["{name}", "{shop}", ...(templateId === "discount" ? ["{discount}"] : []), ...(templateId === "festival" ? ["{festival}"] : [])].map(token => <button key={token} type="button" className="campaign-token" onClick={() => setMessage(current => current + token)}>{token}</button>)}
                 </div>
                 <button className="campaign-reset" type="button" onClick={() => chooseTemplate(templateId)}>Reset template</button>
               </div>
@@ -264,11 +269,26 @@ export default function CampaignsPage() {
 
             <section className="campaign-card">
               <div className="campaign-card-heading">
-                <div><h2>Select your audience</h2><p>Choose individual customers or select everyone shown by your search.</p></div>
+                <div><h2>Select your audience</h2><p>Choose individual customers, or use All customers to select or deselect your entire directory.</p></div>
                 <span className="campaign-step">02</span>
               </div>
               <div className="campaign-segment-row">
-                <button type="button" className="campaign-segment active" onClick={() => setSearch("")}>All customers</button>
+                <button
+                  type="button"
+                  className={`campaign-segment ${customers.length > 0 && selectedIds.length === customers.length ? "active" : ""}`}
+                  onClick={() => {
+                    const allSelected = customers.length > 0 && selectedIds.length === customers.length;
+                    setSelectedIds(allSelected ? [] : customers.map(customer => customer.id));
+                    setNextIndex(0);
+                    setOpenedIds([]);
+                    setNotice("");
+                    setError("");
+                  }}
+                  disabled={customers.length === 0}
+                  aria-pressed={customers.length > 0 && selectedIds.length === customers.length}
+                >
+                  {customers.length > 0 && selectedIds.length === customers.length ? "Deselect all customers" : "All customers"}
+                </button>
                 <span className="campaign-customer-count">{selectedIds.length} selected</span>
               </div>
               <div className="campaign-customer-tools">
