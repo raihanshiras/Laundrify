@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, CalendarClock, Check, ChevronDown, LoaderCircle, Minus, Plus, Shirt, UserRound, X } from "lucide-react";
+import { ArrowLeft, CalendarClock, Check, ChevronDown, ChevronRight, LoaderCircle, Minus, Plus, Shirt, UserRound, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { BrandLogo } from "@/components/brand";
 import { LoadingScreen } from "@/components/loading-screen";
@@ -116,7 +116,7 @@ export default function NewOrderPage(){
    <nav className="order-wizard-steps" aria-label="Order creation steps">{[{title:"Customer",hint:"Who & when"},{title:"Garments & services",hint:"Items & notes"},{title:"Review & payment",hint:"Total & advance"}].map((item,index)=><button key={item.title} type="button" className={"order-wizard-step "+(step===index?"is-current":step>index?"is-complete":"")} onClick={()=>{if(index<step)setStep(index);}} disabled={index>step}><span className="order-wizard-index">{step>index?<Check size={15}/>:String(index+1).padStart(2,"0")}</span><span><strong>{item.title}</strong><small>{item.hint}</small></span></button>)}</nav>
    {error&&<div className="order-alert error" role="alert">{error}</div>
    {customers.length===0&&!loading&&<div className="order-alert info">Add a customer in the Customer section below to continue. You can do it here without leaving this form.</div>}
-   <div className="new-order-layout">
+   <div className={"new-order-layout "+(step===2?"is-summary-step":"")}>
     <div className={"new-order-main "+(step===2?"is-hidden":"")}>
      {step===0&&({step===1&&({step===1&&(<section className="order-form-card">
       <div className="order-section-heading"><span className="order-section-icon"><UserRound size={18}/></span><div><h2>Customer & collection</h2><p>Who does this order belong to?</p></div><span className="order-step-number">01</span></div>
@@ -161,7 +161,7 @@ export default function NewOrderPage(){
      <div className="order-trust-note"><span><Check size={15}/></span><p><strong>Made for the counter.</strong><br/>Order numbers are generated per shop, and totals are recalculated by the database.</p></div>
     </aside>}
    </div>
-   <div className="order-wizard-actions">{step>0&&<button type="button" className="order-wizard-previous" onClick={()=>{setError("");setStep(value=>value-1);}}><ArrowLeft size={16}/> Previous</button>}<span className="order-wizard-step-caption">STEP {step+1} OF 3</span>{step<2&&<button type="button" className="orders-primary order-wizard-next" onClick={()=>{setError("");if(step===0){if(!customerId){setError("Choose a customer before continuing.");return;}setStep(1);return;}for(let i=0;i<lines.length;i++){const line=lines[i];if(!line.itemName.trim()){setError(`Enter a name for item ${i+1}.`);return;}const q=Number(line.quantity),p=Number(line.unitPrice);if(!Number.isFinite(q)||q<=0||q>1000000){setError(`Enter a valid quantity for item ${i+1}.`);return;}if(line.unitPrice.trim()===""||!Number.isFinite(p)||p<0||p>1000000){setError(`Enter a valid unit price for item ${i+1}.`);return;}}setStep(2);}} >Continue <ChevronDown size={16} className="order-next-arrow"/></button>}</div>
+   <div className="order-wizard-actions">{step>0&&<button type="button" className="order-wizard-previous" onClick={()=>{setError("");setStep(value=>value-1);}}><ArrowLeft size={16}/> Previous</button>}<span className="order-wizard-step-caption">STEP {step+1} OF 3</span>{step<2&&<button type="button" className="orders-primary order-wizard-next" onClick={()=>{setError("");if(step===0){if(!customerId){setError("Choose a customer before continuing.");return;}setStep(1);return;}for(let i=0;i<lines.length;i++){const line=lines[i];if(!line.itemName.trim()){setError(`Enter a name for item ${i+1}.`);return;}const q=Number(line.quantity),p=Number(line.unitPrice);if(!Number.isFinite(q)||q<=0||q>1000000){setError(`Enter a valid quantity for item ${i+1}.`);return;}if(line.unitPrice.trim()===""||!Number.isFinite(p)||p<0||p>1000000){setError(`Enter a valid unit price for item ${i+1}.`);return;}}setStep(2);}} >Continue <ChevronRight size={16} className="order-next-arrow"/></button>}</div>
   </form>
  </main>;
 }
