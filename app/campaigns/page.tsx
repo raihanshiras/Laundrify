@@ -57,7 +57,7 @@ const templates: {
 ];
 
 function cleanPhone(value: string) {
-  let number = value.replace(/[^\\d]/g, "");
+  let number = value.replace(/[^\d]/g, "");
   if (number.length === 10) number = "91" + number;
   if (number.startsWith("0") && number.length === 11) number = "91" + number.slice(1);
   return number;
@@ -174,16 +174,11 @@ export default function CampaignsPage() {
     }
 
     // Open synchronously from the click to avoid browser popup blockers.
-    const opened = window.open(
+    window.open(
       `https://wa.me/${number}?text=${encodeURIComponent(renderedMessage(currentCustomer))}`,
       "_blank",
       "noopener,noreferrer"
     );
-    if (!opened) {
-      setError("Your browser blocked the WhatsApp tab. Allow pop-ups for this site and try again.");
-      return;
-    }
-
     setError("");
     setNotice(`WhatsApp opened for ${currentCustomer.full_name}. Review the message and press Send in WhatsApp.`);
     setOpenedIds(current => current.includes(currentCustomer.id) ? current : [...current, currentCustomer.id]);
