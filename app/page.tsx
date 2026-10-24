@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowUpRight, ChevronDown, CircleHelp, Clock3, CreditCard,
-  LayoutDashboard, LogOut, MessageCircle, PackageCheck,
+  LayoutDashboard, LogOut, MessageCircle, Megaphone, PackageCheck,
   Plus, Search, Shirt, Users, Wallet,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -24,6 +24,7 @@ const nav = [
   { label: "Overview", icon: LayoutDashboard, active: true },
   { label: "Orders", icon: Shirt },
   { label: "Customers", icon: Users },
+  { label: "Campaigns", icon: Megaphone },
   { label: "Payments & ledger", icon: Wallet },
 ];
 
@@ -119,7 +120,7 @@ export default function Home() {
         <div className="shop-switcher"><div className="shop-avatar">{shop?.name?.[0]?.toUpperCase() || "L"}</div><div className="shop-copy"><strong>{shop?.name || "Your shop"}</strong><span>{shop?.address || "Shop workspace"}</span></div></div>
         <div className="nav-label">WORKSPACE</div>
         <nav className="nav-list" aria-label="Main navigation">
-          {nav.map(({ label, icon: Icon, active }) => <button className={"nav-item " + (active ? "active" : "")} key={label} type="button" onClick={() => { if (label === "Customers") router.push("/customers"); else if (label === "Orders") router.push("/orders"); else if (label === "Payments & ledger") router.push("/payments"); }}><Icon size={18} strokeWidth={1.8} /><span>{label}</span>{label === "Orders" && <span className="nav-count">{orders.length}</span>}</button>)}
+          {nav.map(({ label, icon: Icon, active }) => <button className={"nav-item " + (active ? "active" : "")} key={label} type="button" onClick={() => { if (label === "Customers") router.push("/customers"); else if (label === "Orders") router.push("/orders"); else if (label === "Payments & ledger") router.push("/payments"); else if (label === "Campaigns") router.push("/campaigns"); }}><Icon size={18} strokeWidth={1.8} /><span>{label}</span>{label === "Orders" && <span className="nav-count">{orders.length}</span>}</button>)}
         </nav>
         <div className="sidebar-bottom">
           <div className="help-card"><div className="help-icon"><CircleHelp size={17} /></div><div><strong>Laundrify</strong><span>Shop management</span></div></div>
